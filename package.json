@@ -1,0 +1,25 @@
+{
+  "name": "HUEplayer",
+  "version": "1.0.0",
+  "description": "HUEPLAYER",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "MiraiM",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "app": "^0.1.0",
+    "colors": "^1.4.0",
+    "electron": "^7.1.4",
+    "fs": "0.0.1-security",
+    "howler": "^2.1.2",
+    "jquery": "^3.4.1",
+    "jsdom": "^15.2.1",
+    "node-hid": "^1.1.0",
+    "spectrum-colorpicker": "^1.8.0"
+  },
+  "devDependencies": {
+    "electron-rebuild": "^1.8.8"
+  }
+}

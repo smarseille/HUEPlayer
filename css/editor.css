@@ -1,0 +1,167 @@
+body,html {
+    border: 1px solid grey;
+	margin: 0px;
+	padding: 0px;
+	font-family: verdana;
+	user-select: none;
+	color: 	white;
+	background: black;
+	height: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+.top {
+	color: 	white;
+	width: 100%;
+	height: 40px;
+	-webkit-app-region: drag;
+}
+.logo {
+	background-image:url('../images/Longlogo.png');
+	background-repeat: no-repeat;
+	background-size: cover;
+	font-size: 25px;
+	width: 160px;
+	height: 30px;
+	margin: 5px;
+}
+
+.buttons {
+	display: block;
+	width: 25px;
+	right:0;
+}
+.float{
+	float: left;
+}
+.floatr{
+	float: right;
+}
+.close {
+	text-align: center;
+	width: 50px;
+	font-size: 20px;
+	-webkit-app-region: no-drag;
+}
+.close:hover {
+	background: #303030;
+	text-align: center;
+}
+.clear {
+	clear: both;
+}
+.playerframe {
+	background: #1f1e1e;
+	width: 100%;
+	height: 40px;
+	
+}
+
+
+
+.frame {
+	padding-top: 1px;
+	background: #1f1e1e;
+	width: 100%;
+	height: 500px;
+
+}
+.wrapplay {
+	padding-left: 200px;
+}
+
+.seqbut {
+	display: block;
+	background-color: #3d3d3d;
+	background-size: cover;
+	float: left;
+	border: 1px solid #666666;
+	margin-right: 5px;
+	margin-top: 10px;
+	font-size: 11px;
+	padding: 3px; 
+	color: white;
+}
+.seqbut:hover {
+	background-color: #545454;
+}
+.frame {
+	width: 100%;
+	background-color: #616161;
+	overflow-y: scroll;
+	height: 475px;
+}
+.framebut {
+	display: block;
+	background-color: #3d3d3d;
+	background-size: cover;
+	float: right;
+	border: 1px solid #666666;
+	margin-right: 5px;
+	margin-top: 10px;
+	font-size: 11px;
+	padding: 3px; 
+	color: white;
+}
+
+.framebutnofl {
+	display: block;
+	background-color: #3d3d3d;
+	background-size: cover;
+	float: right;
+	border: 1px solid #666666;
+	margin-right: 5px;
+	
+	font-size: 11px;
+	padding: 3px; 
+	color: white;
+}
+.framebut:hover {
+	background-color: #545454;
+}
+.frameitem {
+	display: block;
+	border: 1px solid black;
+	height: 60px;
+}
+.led {
+	margin: 1px;
+	margin-top: 17px;
+	width: 6px;
+	height: 6px;
+	border: 1px solid black;
+	background: black;
+	float: left;
+}
+.spacehor {
+	width: 30px;
+	clear: both;
+}
+.spacing {
+	margin: 5px;
+	width: 1px;
+	height: 1px;
+	float: left;
+}
+.framenb {
+	height: 30px;
+	width: 20px;
+	font-size: 20px;
+	text-align: center;
+	padding-top: 10px;
+	float: left;
+	background-color: black;
+	color: black;
+	margin-right: 5px;
+}
+
+.label {
+	font-size: 12px;
+	float: left;
+	padding-top: 5px
+}
+.block {
+	display: block;
+	text-align: center;
+}

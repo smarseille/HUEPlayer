@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Editor</title>
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<script>
+		const ipcRenderer = require('electron').ipcRenderer; 
+		window.$ = window.jQuery = require('jquery');
+	</script>
+	
+	<link href="color-picker-master/color-picker.min.css" rel="stylesheet">
+	<script src="color-picker-master/color-picker.min.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="../css/advanced.css">
+  </head>
+  <body>
+  <main>
+	<div class="top">
+	    <div class="logo float"></div>
+		<div class="buttons floatr">
+			<div id="close" class="close floatr">✖</div>
+		</div>
+	    <div class="clear"></div>
+    </div>
+   
+	<div id="options">
+		<div class="liner">
+			<p>Add frames:</p>
+			<label>Amount:</label><input type="text" id='frames' size="5" /><div class="button floatr" id="addfr">Add frames</div>
+		</div>
+		
+	
+		<div class="liner">
+			<p>Add fade in:</p>
+			<label>Start Led:</label><input type="text" id='fistled' size="5" /> 
+			<label>End Led:</label><input type="text" id='fienled' size="5" /><br>
+			<label>Start Frame:</label><input type="text" id='fistfr' size="5" /> 
+			<label>For Frames:</label><input type="text" id='fimaxfr' size="5" /> <br>
+			<label>Fade to Color:</label><input type="text" id='ficolor' size="5" /> 
+			<div class="button floatr" id="addfi">Add Fade In</div>
+		</div>
+		<div class="liner">
+			<p>Add fade out:</p>
+			<label>Start Led:</label><input type="text" id='fostled' size="5" /> 
+			<label>End Led:</label><input type="text" id='foenled' size="5" /> <br>
+			<label>Start Frame:</label><input type="text" id='fostfr' size="5" />
+			<label>For Frames:</label><input type="text" id='fomaxfr' size="5" /><br>
+			<label>Fade from Color:</label><input type="text" id='focolor' size="5" />
+			<div class="button floatr" id="addfo">Add Fade Out</div>
+		</div>
+		<div class="liner">
+			<p>Add fade to:</p>
+			<label>Start Led:</label><input type="text" id='ftstled' size="5" />
+			<label>End Led:</label><input type="text" id='ftenled' size="5" /><br>
+			<label>Start Frame:</label><input type="text" id='ftstfr' size="5" />
+			<label>For Frames:</label><input type="text" id='ftmaxfr' size="5" /><br>
+			<label>Start Color:</label><input type="text" id='ftstcolor' size="5" />
+			<label>End Color:</label><input type="text" id='ftendcolor' size="5" />
+			<div class="button floatr" id="addft">Add Fade to</div>
+		</div>
+		<div class="liner">
+			<p>Add moving led:</p>
+			<label>Start frame:</label><input type="text" id='mvstfr' size="5" />
+			<label>Dupe frames:</label><input type="text" id='mvdfr' size="5" /><br>
+			<label>Start Led:</label><input type="text" id='mvstled' size="5" />
+			<label>Amount of head leds:</label><input type="text" id='mvhled' size="5" /><br>
+			<label>Amount of tail leds:</label><input type="text" id='mvtled' size="5" />
+			<label>Positions to move:</label><input type="text" id='mvpos' size="5" /><br>
+			<label>Color:</label><input type="text" id='mvcolor' size="5" />
+			<label>move per positions:</label><input type="text" id='skippos' size="5" />
+			<div class="button floatr" id="mvltr">Move L to R</div>
+			<div class="button floatr" id="mvrtl">Move R to L</div>
+		</div>
+	</div>
+
+	
+	
+    </main>
+    <script src="../scripts/advanced.js"></script>
+  </body>
+</html>

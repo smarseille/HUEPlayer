@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>HUE Player</title>
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+	<script>
+		const ipcRenderer = require('electron').ipcRenderer; 
+		window.$ = window.jQuery = require('jquery');
+	</script>
+	
+	<script src="./scripts/mainscreen.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/mainscreen.css">
+  </head>
+  <body>
+  <main>
+  	<div class="top">
+	    <div class="logo float"></div>
+		<div class="buttons floatr">
+			<div id="close" class="close floatr" onclick="ipcRenderer.send('Close');">✖</div>
+		</div>
+	    <div class="clear"></div>
+    </div>
+        <div class="clear"></div>
+    <div class="playerframe">
+	    <div class="wrapplay">
+	  		<div class="slidecontainer">
+	  			<input type="range" min="1" max="200" value="0" class="slider" id="slide">
+			</div>
+		    <div class="timer"><p id="timer"> -:--</p>
+		    </div>
+		    
+		    <div class="butn" id="play"></div>
+		    <div class="butn" id="stop"></div> 
+		    <div class="butn" id="Opnf"></div>
+	    </div>   
+    </div>
+    <div class="seq">
+    	<div class="seqbut" id="addseq">Add sequence</div>
+    	<div class="seqbut" id="editseq">Create/Edit sequence</div>
+    	<div class="seqbut" id="savep">Save project</div>
+    	<div class="seqbut" id="loadp">Load project</div>
+    	<div class="seqbut" id="testseq">Test Seq</div>
+    	<div class="seqbut" id="curframe">0</div>
+    </div>
+    <div class="content" id="content">
+    	<div class="sequence">
+    		<div class="info">
+    			<div class="label"> Seq ID: </div><div class="value seqtitle" id="seqtitle"></div>
+	 <div class="label"> Frames: </div><div class="valuesm" id="frames"></div>
+	 <div class="label"> Speed: </div><div class="valuesm" id="speed"></div>
+    		</div>
+    		<select class="framebut sequencesel" id="sequencesel">
+			</select>
+			<div class="framebut seqTest" id="seqTest">Test</div>
+			<div class="framebut seqClone" id="seqClone">Clone</div>
+	 		<div class="framebut seqDelete"  id="seqDelete">Delete</div>
+    	</div>
+    
+    </div>
+	<script src="./node_modules/howler/dist/howler.js"></script>
+	<script>
+	</script>
+    </main>
+  </body>
+</html>

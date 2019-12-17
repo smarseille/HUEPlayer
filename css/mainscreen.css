@@ -1,0 +1,205 @@
+body,html {
+  border: 1px solid grey;
+  margin: 0px;
+  padding: 0px;
+  font-family: verdana;
+  user-select: none;
+  color: white;
+  background: black;
+  height: 100%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+.top {
+  color: white;
+  width: 100%;
+  height: 40px;
+  -webkit-app-region: drag;
+}
+.logo {
+  background-image:url('../images/Longlogo.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-size: 25px;
+  width: 160px;
+  height: 30px;
+  margin: 5px;
+}
+.timer {
+  color: white;
+  font-family: consolas;
+  font-size: 15px;
+  margin-left: 20px;
+  width: 100px;
+  text-align: center;
+  float: left;
+}
+.buttons {
+  display: block;
+  width: 50px;
+  right:0;
+}
+.float{
+  float: left;
+}
+.floatr{
+  float: right;
+}
+.close {
+  text-align: center;
+  width: 50px;
+  font-size: 20px;
+  -webkit-app-region: no-drag;
+}
+.close:hover {
+  background: #303030;
+  text-align: center;
+}
+.clear {
+  clear: both;
+}
+.playerframe {
+  background: #1f1e1e;
+  width: 100%;
+  height: 100px;
+}
+.wrapplay {
+  padding-top: 15px;
+  padding-left: 200px;
+}
+#play {
+  background-image: url('../images/play.png');
+}
+#stop {
+  background-image: url('../images/stop.png');
+}
+#Opnf {
+  background-image: url('../images/eject.png');
+}
+.butn {
+  display: block;
+  background-color: #3d3d3d;
+  background-size: cover;
+  width: 32px;
+  height: 32px;
+  float: left;
+  border: 1px solid #666666;
+  margin: 5px;
+}
+.butn:hover {
+  background-color: #545454;
+}
+.seqbut {
+  display: block;
+  background-color: #3d3d3d;
+  background-size: cover;
+  float: right;
+  border: 1px solid #666666;
+  margin-right: 5px;
+  margin-top: 10px;
+  font-size: 11px;
+  padding: 3px; 
+}
+.seqbut:hover {
+  background-color: #545454;
+}
+.slidecontainer {
+  width: 100%; 
+}
+.slider {
+  -webkit-appearance: none;
+  width: 400px;
+  height: 5px;
+  border-radius: 5px;  
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  margin-left: calc(100%-200px);
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; 
+  background: #7f0000;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #7f0000;
+  cursor: pointer;
+}
+
+.content {
+	margin-top: 40px;
+	width: 100%;
+	background-color: #303030;
+	overflow-y: scroll;
+	height: 410px;
+}
+
+.sequence {
+	border: 1px solid black;
+	background: #707070;
+	height: 40px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.info {	
+	float: left;
+	
+	padding-top: 15px;
+}
+
+.label {
+	font-size: 10px;
+	font-weight: bold;
+	float: left;
+	height: 25px;
+}
+
+.value {
+	padding-left: 10px;
+	width: 285px;
+	font-size: 12px;
+	float: left;
+	height: 25px;
+}
+
+.valuesm {
+	width: 35px;
+	font-size: 10px;
+	float: left;
+	height: 25px;
+}
+
+
+.framebut {
+	display: block;
+	background-color: #3d3d3d;
+	background-size: cover;
+	float: right;
+	border: 1px solid #666666;
+	margin-left: 2px;
+	font-size: 11px;
+	
+	margin-top: 10px;
+	padding: 3px; 
+	color: white;
+}
+
+.framebut:hover {
+	background-color: #545454;
+}
+
+.selected { 
+	background: #7f0000;
+}
