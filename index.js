@@ -13,6 +13,8 @@
 // Special NO Thanks:
 // Puff - Keep slacking.. :( learn NodeJS so you can help me!
 
+
+//setting requirements 
 const electron = require('electron');
 const {remote, app, BrowserWindow, Menu, dialog} = require('electron')
 const {ipcMain}	= require('electron'); 
@@ -32,11 +34,18 @@ var stopseq = 'no';
 let mainWindow;
 
 console.log(process.version)
+
+
+//
+// HUE/USB HID COMMANDS
+//
+
 // detection set for led devices
 function detecthue() {
 	console.log('Detecting NXZT HID Device');
 	var i = 0;
 	devices.forEach(element => {
+		// the 7793 / 8194 vendor/productId is for the Hue v2 Ambient! Need to change to correct version for the normal Hue v2. If anyone have this information or want to help me out getting it, please.
 		if (element.vendorId == "7793" && element.productId == "8194") {
 			detectedHID[i] = element;
 	        i++;
@@ -44,6 +53,7 @@ function detecthue() {
 		});
 	var i = 0;
 	detectedHID.forEach(element => {
+		// report the detected devices and array number it is 'opened' at. 
 		console.log('[DETECTED] NXZT HUB: ' + colors.green(element.product) + ' at path: ' + colors.yellow(element.path))
 		opendev[i] = new HID.HID(element.path);
 		console.log('Opened path: ' + colors.yellow(element.path) + ' at: ' +  colors.green(i));
@@ -53,8 +63,9 @@ function detecthue() {
 	module.exports.opendev = opendev;
 }
 
-detecthue();
 
+
+// usb commands for the NZXT Hubs.
 function sendCommand (type, dev, ch, strip, fxcolors) {
 	//type = effect type, such as static.
 	//dev = device number, based on detected devices.
@@ -127,13 +138,26 @@ function sendCommand (type, dev, ch, strip, fxcolors) {
 	}
 }
 
+// For each time you apply colors per led, you need to tell the hub to apply.
 function sendApply(dev,ch) {
 	opendev[0].write([0x22,0xa0,parseInt(0 + ch, 16),0x00,0x01,0x00,0x00,0x27,0x00,0x00,0x80,0x00,0x32,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00]);		
 }
 
 
+//
+// Log to console 
+//
 
-// Windows
+//a call to send information to log, better then alert() as alert blocks buttons after displayhed and shorter than dialog box.
+ipcMain.on("log",function (event,arg) {
+	console.log(arg);
+});
+
+
+
+//
+//  BASIC WINDOW FUNCTIONS
+// 
 function createWindow () {
   // Create the browser window.
 	mainWindow = new BrowserWindow({
@@ -152,7 +176,7 @@ function createWindow () {
 	
 }
 
-
+// Editor window
 function openEditor () {
 	  // Create the browser window.
 		let winx = new BrowserWindow({
@@ -166,14 +190,14 @@ function openEditor () {
 	    },
 		frame: false
 	  })
-	    // and load the index.html of the app.
+	    // and load editor.html
 	  winx.loadFile('./ins/editor.html')
-	//winx.webContents.openDevTools()
+	  //winx.webContents.openDevTools()
 	  return winx;
 }
 
 
-
+// advanced window
 function openAdvanced () {
 	  // Create the browser window.
 		let winx = new BrowserWindow({
@@ -193,33 +217,14 @@ function openAdvanced () {
 	  return winx;
 }
 
-
-
-app.on('ready', createWindow);
-
-
-
-//ipc calls
-ipcMain.on("Close",function (event) {
-	app.exit();
-});
-ipcMain.on("log",function (event,arg) {
-	console.log(arg);
-});
-
-
-ipcMain.on("stopseqp",function (event,arg) {
-	stopseq = arg;
-	
-});
-
+//open editor from main window button "create/edit sequence" 
 ipcMain.on("Openeditor",function (event,arg) {
 	if (typeof(editor) == 'undefined' || editor == '') {
 		editor = openEditor();	
 	}
 });
 
-
+// open advanced settings from editor window "advanced" 
 ipcMain.on("openadvanced",function (event) {
 	
 	if (typeof(openadv) == 'undefined' || openadv == '') {
@@ -227,67 +232,34 @@ ipcMain.on("openadvanced",function (event) {
 	}
 	
 });
+// close window on x button.
 ipcMain.on("closeadv",function (event,arg) {
 		openadv.close();
 		openadv = '';
 });
+//close the app from main window x button
 
-ipcMain.on("fullsave",function (event,arg) {
-		var arrayid = 0;
-		var match;
-		seqdata.forEach(element => {
-			if (element[1] === arg[1]) {
-				match = arrayid;
-			}
-			arrayid++;
-		});
-	
-		if (typeof(match) != 'undefined') {
-			seqdata[match] = [...arg];
-		} else {
-			seqdata[arrayid] = [...arg];
-		}
-		jsonsave = JSON.stringify(seqdata);
-
-		fs.writeFileSync("seqdata.json", jsonsave, 'utf8');
-		
+ipcMain.on("Close",function (event) {
+	app.exit();
 });
 
-ipcMain.on("deleteseq",function (event,arg) {
-	var arrayid = 0;
-	var match;
-	seqdata.forEach(element => {
-		if (element[1] === arg) {
-			match = arrayid;
-		}
-		arrayid++;
-	});
 
-	if (typeof(match) != 'undefined') {
-		seqdata.splice(match, 1);
-		
-		jsonsave = JSON.stringify(seqdata);
-		fs.writeFileSync("seqdata.json", jsonsave, 'utf8');
-		
-	};
+/////////////
+//ipc calls//
+/////////////
+
+
+
+//
+// Main window calls
+//
+
+//Call from stop button to stop running the sequence.
+ipcMain.on("stopseqp",function (event,arg) {
+	stopseq = arg;
 });
 
-ipcMain.on("getids",function (event) {
-	var values = new Array;
-	var count = 0;
-	if (seqdata.length != 0) {
-		seqdata.forEach(element => {
-			values[count] = new Array();
-			values[count][0] = element[0];
-			values[count][1] = element[1];
-			values[count][2] = element[2].length;
-			values[count][3] = element[3];
-			count++;
-		});
-	}
-	event.sender.send('updatelist',values);
-});
-
+// load sequence file.
 ipcMain.on("loadseq",function (event,arg,arg2) {
 	var values = new Array;
 	var count = 0;
@@ -305,56 +277,7 @@ ipcMain.on("loadseq",function (event,arg,arg2) {
 
 });
 
-
-
-ipcMain.on("closeedit",function (event,arg) {
-	editor.close();
-	editor = '';
-	mainWindow.webContents.send('updatesel');
-});
-
-
-
-ipcMain.on("testframe",function(event,arg) {
-	sendCommand('static',0,1,0,arg[0]);
-	sendCommand('static',0,1,1,arg[1]);
-	sendCommand('static',0,2,0,arg[2]);
-	sendCommand('static',0,2,1,arg[3]);
-	sendApply(0,1);
-	sendApply(0,2);
-});
-
-
-ipcMain.on("testrun", async function(event,arg,frspeed) {
-	var y = 0;
-	var arrc = arg.length - 1;
-	frspeed = frspeed - 1;
-	while (y <= arrc) {
-		var x = 0;
-		while (x <= frspeed) {
-			sendCommand('static',0,1,0,arg[y][0]);
-			sendCommand('static',0,1,1,arg[y][1]);
-			sendCommand('static',0,2,0,arg[y][2]);
-			sendCommand('static',0,2,1,arg[y][3]);
-			sendApply(0,1);
-			sendApply(0,2);
-			await sleep(15);
-			x++;
-		};
-		y++;
-	};
-});
-
-
-ipcMain.on("testid", async function(event,arg) {
-	var arr = new Array();
-	var sendarr = new Array();
-	arr = getseq(arg);
-	sendarr = prepseq(arr[1],arr[0])
-	
-	await runstream(sendarr);
-});
-
+//Run the sequence (on play button from main window)
 ipcMain.on("runseq", async function(event,arg) {
 	var sendarr = new Array();
 	var arr = new Array();
@@ -383,31 +306,7 @@ ipcMain.on("runseq", async function(event,arg) {
 });
 
 
-
-
-ipcMain.on("export", function (event, id, filename) {
-	const options = {
-			filters: [ { name: "HuePlayer JSON", extensions: ['hpjson','hpj']} ],
-			defaultPath: filename,
-	}
-	dialog.showSaveDialog(null, options).then(result => {
-		  if (result.canceled == false) {
-			  
-				var arrayid = 0;
-				var match;
-				seqdata.forEach(element => {
-					if (element[1] === id) {
-						jsonsave = JSON.stringify(element);
-					}
-					arrayid++;
-				});				
-				fs.writeFileSync(result.filePath, jsonsave, 'utf8');
-		  }
-		}).catch(err => {
-		  console.log(err)
-		});
-});
-
+// save the project including path to song.
 ipcMain.on("saveseq", function (event, seqlist, song) {
 	const options = {
 			filters: [ { name: "HuePlayer sequence JSON", extensions: ['hpseqj']} ],
@@ -442,32 +341,138 @@ ipcMain.on("saveseq", function (event, seqlist, song) {
 		});
 });
 
-
-ipcMain.on("loadseqp", function (event) {
-	
-	
-});
-ipcMain.on("loadseqp", function (event) {
+//export the selected sequence to json format.
+ipcMain.on("export", function (event, id, filename) {
 	const options = {
-		    type: 'warning',
-		    buttons: ['Yes', 'No'],
-		    defaultId: 0,
-		    title: 'Load',
-		    message: 'All duplicate sequences will be overwritten!',
-		    detail: 'Do you want to overwrite the duplicate sequences?',
-	};
-	let response = dialog.showMessageBoxSync(null, options);
-
-	switch (response) {
-		case 0:
-			runload();
-			break;
-		case 1:
-			break;
+			filters: [ { name: "HuePlayer JSON", extensions: ['hpjson','hpj']} ],
+			defaultPath: filename,
 	}
-	
+	dialog.showSaveDialog(null, options).then(result => {
+		  if (result.canceled == false) {
+			  
+				var arrayid = 0;
+				var match;
+				seqdata.forEach(element => {
+					if (element[1] === id) {
+						jsonsave = JSON.stringify(element);
+					}
+					arrayid++;
+				});				
+				fs.writeFileSync(result.filePath, jsonsave, 'utf8');
+		  }
+		}).catch(err => {
+		  console.log(err)
+		});
 });
 
+
+// Eject button behaviour, select a mp3
+ipcMain.on("loadmusic", function (event) {
+	const optionssave = {  
+			properties: ['openFile'], 
+			filters: [ { name: "Music MP3", extensions: ['mp3']} ],
+				
+			}
+	dialog.showOpenDialog(null, optionssave).then(result => {
+		  if (result.canceled == false) {	  
+				console.log(result.filePaths);
+				
+				result.filePaths.forEach( item => {
+					// return the path to the main window to process the open in Howler
+					event.sender.send('openfile',item);
+				});
+		  }
+		}).catch(err => {
+		  console.log(err)
+		});
+});
+
+//
+// Editor calls
+// 
+
+// Call from editor to save data, when requesting to save the sequence.
+ipcMain.on("fullsave",function (event,arg) {
+		var arrayid = 0;
+		var match;
+		seqdata.forEach(element => {
+			if (element[1] === arg[1]) {
+				match = arrayid;
+			}
+			arrayid++;
+		});
+	
+		if (typeof(match) != 'undefined') {
+			seqdata[match] = [...arg];
+		} else {
+			seqdata[arrayid] = [...arg];
+		}
+		jsonsave = JSON.stringify(seqdata);
+
+		fs.writeFileSync("seqdata.json", jsonsave, 'utf8');
+		
+});
+
+// Delete sequence from main sequence file
+ipcMain.on("deleteseq",function (event,arg) {
+	var arrayid = 0;
+	var match;
+	seqdata.forEach(element => {
+		if (element[1] === arg) {
+			match = arrayid;
+		}
+		arrayid++;
+	});
+
+	if (typeof(match) != 'undefined') {
+		seqdata.splice(match, 1);
+		
+		jsonsave = JSON.stringify(seqdata);
+		fs.writeFileSync("seqdata.json", jsonsave, 'utf8');
+		
+	};
+});
+
+// close edit window
+ipcMain.on("closeedit",function (event,arg) {
+	editor.close();
+	editor = '';
+	mainWindow.webContents.send('updatesel');
+});
+
+// display the current frame on the Hue device
+ipcMain.on("testframe",function(event,arg) {
+	sendCommand('static',0,1,0,arg[0]);
+	sendCommand('static',0,1,1,arg[1]);
+	sendCommand('static',0,2,0,arg[2]);
+	sendCommand('static',0,2,1,arg[3]);
+	sendApply(0,1);
+	sendApply(0,2);
+});
+
+//test current sequence from the edit play button, without music.
+ipcMain.on("testrun", async function(event,arg,frspeed) {
+	var y = 0;
+	var arrc = arg.length - 1;
+	frspeed = frspeed - 1;
+	while (y <= arrc) {
+		var x = 0;
+		while (x <= frspeed) {
+			sendCommand('static',0,1,0,arg[y][0]);
+			sendCommand('static',0,1,1,arg[y][1]);
+			sendCommand('static',0,2,0,arg[y][2]);
+			sendCommand('static',0,2,1,arg[y][3]);
+			sendApply(0,1);
+			sendApply(0,2);
+			await sleep(15);
+			x++;
+		};
+		y++;
+	};
+});
+
+
+// imports a project
 ipcMain.on("import", function (event,id, filename) {
 	const optionssave = {  
 				properties: ['openFile'], 
@@ -527,75 +532,74 @@ ipcMain.on("import", function (event,id, filename) {
 		});
 });
 
+//
+//advanced dialog communications
+//
+
+//it will send these back to the editor to be run inside the editor:
+
+//send the command to add amount of frames 
+ipcMain.on("addframes",function (event, arg) {
+	editor.webContents.send('addframes', arg);
+});
 
 
-ipcMain.on("loadmusic", function (event) {
-	const optionssave = {  
-			properties: ['openFile'], 
-			filters: [ { name: "Music MP3", extensions: ['mp3']} ],
-				
-			}
-	dialog.showOpenDialog(null, optionssave).then(result => {
-		  if (result.canceled == false) {	  
-				console.log(result.filePaths);
-				
-				result.filePaths.forEach( item => {
-					event.sender.send('openfile',item);
-				});
-		  }
-		}).catch(err => {
-		  console.log(err)
+//send the command fade out from color to black
+ipcMain.on("fadeout",function (event, arg) {
+	editor.webContents.send('fadeout', arg);
+});
+
+//send the command fade in from black to color
+ipcMain.on("fadein",function (event, arg) {
+	editor.webContents.send('fadein', arg);
+});
+
+//send the command fade to from color a to color b
+ipcMain.on("fadeto",function (event, arg) {
+	editor.webContents.send('fadeto', arg);
+});
+
+//move left to right 
+ipcMain.on("mvltr",function (event, arg) {
+	editor.webContents.send('mvltr', arg);
+});
+
+//move right to left 
+ipcMain.on("mvrtl",function (event, arg) {
+	editor.webContents.send('mvrtl', arg);
+});
+
+
+
+// 
+// Shared calls
+//
+
+// Not a good name, but it when called, it will return all sequence names, their unique ID's, amount of frames and playback speed.
+// It will update within the editor window at the select field, as well for the main window per sequence entry.
+ipcMain.on("getids",function (event) {
+	var values = new Array;
+	var count = 0;
+	if (seqdata.length != 0) {
+		seqdata.forEach(element => {
+			values[count] = new Array();
+			values[count][0] = element[0];
+			values[count][1] = element[1];
+			values[count][2] = element[2].length;
+			values[count][3] = element[3];
+			count++;
 		});
-});
-
-
-//temporary democode
-ipcMain.on("Play",function (event,arg,frpeed) {
-		console.log(arg);
-		cur = arg;
-		
-		var xdc = new Array();
-		xdc = ['000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000','000000']
-
-		sendCommand('static',0,1,1,xdc);
-		sendCommand('static',0,2,0,xdc);
-		sendCommand('static',0,2,1,xdc);
-	
-		var xd = new Array();
-		
-		var y = 0;
-	
-		
-		while (y < 19) {
-				if (i == y) {
-					xd.push('00ff00');
-					if (y != 19) {
-					
-					xd.push('00ff00');
-					} else {
-						
-						
-					}
-					
-				} else {
-					xd.push('000000');
-				}
-				y++;
-				if (i == 19) {
-					i = 0;
-				}
-		}
-		i++;
-		sendCommand('static',0,1,0,xd);
-		sendCommand('static',0,1,1,xd);
-		sendCommand('static',0,2,0,xd);
-		sendCommand('static',0,2,1,xd);
-		sendApply(0,1);
-		sendApply(0,2);
+	}
+	event.sender.send('updatelist',values);
 });
 
 
 
+//
+// other functions
+//
+
+// json check to avoid an error popup
 function isJson(str) {
     try {
         JSON.parse(str);
@@ -605,70 +609,14 @@ function isJson(str) {
     return true;
 }
 
+// sleep function
 function sleep(ms){
     return new Promise(resolve=>{
         setTimeout(resolve,ms)
     })
 }
 
-function loadfile() {
-		var newdata = fs.readFileSync("seqdata.json").toString();
-		
-		if (isJson(newdata) ) {
-			seqdata = JSON.parse(fs.readFileSync("seqdata.json"));
-		} else {
-			
-		} 
-}
-loadfile();
-
-async function runstream(arg) {
-	var y = 0;
-	var arrc = arg.length - 1;
-	var rmtime = 0;
-	while (y <= arrc) {
-		
-		if (typeof(arg[4]) != 'undefined') {
-			var start = new Date().getTime();
-			mainWindow.webContents.send('updateseq',arg[y][4]);
-		}
-			
-			sendCommand('static',0,1,0,arg[y][0]);
-			sendCommand('static',0,1,1,arg[y][1]);
-			sendCommand('static',0,2,0,arg[y][2]);
-			sendCommand('static',0,2,1,arg[y][3]);
-			sendApply(0,1);
-			sendApply(0,2);
-			
-			
-			var end = new Date().getTime();
-			var time = end - start;
-			var wait = 21 - time;
-			wait = wait - rmtime
-			await sleep(wait);
-			end = new Date().getTime();
-			time = end - start;
-			console.log('Execution time: ' + time);
-			if (time <= 20) {
-				await sleep(1);
-			}
-			if (time > 21) {
-				rmtime = time - 21;
-			} else {
-				rmtime = 0;
-			}
-		y++;
-		if (stopseq == 'yes') {
-			stopseq = 'no';
-	//		mainWindow.webContents.send('updateseq','off');
-			break;
-		}
-
-	}
- mainWindow.webContents.send('updateseq','off');
-}
-
-
+// split function to set arrays into multiple chunks. As you can set only per 20 lights and I process a frame of 80, this function is used to split them in 4x 20.
 function chunkArray(myArray, chunk_size){
     var index = 0;
     var arrayLength = myArray.length;
@@ -680,7 +628,78 @@ function chunkArray(myArray, chunk_size){
     return tempArray;
 }
 
+// Load settings file
+function loadfile() {
+		var newdata = fs.readFileSync("seqdata.json").toString();
+		
+		if (isJson(newdata) ) {
+			seqdata = JSON.parse(fs.readFileSync("seqdata.json"));
+		} else {
+			
+		} 
+}
 
+// main function to run the sequence when playing the song, part of the play button
+async function runstream(arg) {
+	// set variables to count
+	var y = 0; //current frame number
+	var arrc = arg.length - 1; // max frame number
+	var rmtime = 0; // time that will be removed from wait if bigger than 22 ms
+	
+	while (y <= arrc) {
+		// set start time of frame
+		var start = new Date().getTime();
+		
+		if (typeof(arg[4]) != 'undefined') {
+			mainWindow.webContents.send('updateseq',arg[y][4]);
+		}
+			// process the frame to the hue device
+			sendCommand('static',0,1,0,arg[y][0]);
+			sendCommand('static',0,1,1,arg[y][1]);
+			sendCommand('static',0,2,0,arg[y][2]);
+			sendCommand('static',0,2,1,arg[y][3]);
+			sendApply(0,1);
+			sendApply(0,2);
+			
+			// set end time of frame and do some calculations to see how long to wait to become close to 22ms
+			var end = new Date().getTime();
+			var time = end - start;
+			var wait = 21 - time;
+			wait = wait - rmtime
+			
+			// wait
+			await sleep(wait);
+			
+			// see how long it really took
+			end = new Date().getTime();
+			time = end - start;
+			
+			// log to console
+			console.log('Execution time: ' + time);
+			// Ugly hack to try to get as stable to 21/22 ms:
+			if (time <= 20) {
+				await sleep(1);
+			}
+			if (time > 21) {
+				rmtime = time - 21;
+			} else {
+				rmtime = 0;
+			}
+		y++;
+		if (stopseq == 'yes') {
+			// stop the play of the sequence
+			stopseq = 'no';
+	//		mainWindow.webContents.send('updateseq','off');
+			break;
+		}
+
+	}
+ mainWindow.webContents.send('updateseq','off');
+}
+
+
+
+// prepare the sequence into a format to be played over USB HID (changing color values and make a big array)
 function prepseq(arr,frspeed) {	
 	var hexarray = new Array();
 	var y = 0;
@@ -730,6 +749,29 @@ function getseq(arg) {
 	return tmparray;
 };
 
+//receive the call to load sequence
+ipcMain.on("loadseqp", function (event) {
+	const options = {
+		    type: 'warning',
+		    buttons: ['Yes', 'No'],
+		    defaultId: 0,
+		    title: 'Load',
+		    message: 'All duplicate sequences will be overwritten!',
+		    detail: 'Do you want to overwrite the duplicate sequences?',
+	};
+	let response = dialog.showMessageBoxSync(null, options);
+
+	switch (response) {
+		case 0:
+			runload();
+			break;
+		case 1:
+			break;
+	}
+	
+});
+
+// Load dialog for sequence file from disk, main dialog.
 function runload() {
 	const optionssave = {  
 			properties: ['openFile'], 
@@ -743,7 +785,7 @@ function runload() {
 					var matched = 'no';
 					
 					var songpath = tempdata[0];
-					console.log(songpath);
+					
 					if (Array.isArray(tempdata[1]) != false ) {
 						tempdata[1].forEach(row => {
 							if (seqdata.length == 0 ) {
@@ -755,7 +797,6 @@ function runload() {
 								
 									if (element[1] === row[1]) {
 										seqdata[arrayid] = [...row];
-										
 										matched = "yes";
 									} else {
 													
@@ -764,6 +805,7 @@ function runload() {
 									arrayid++;
 								});
 								if (matched == 'no') {
+									// saving sequence to the 'global' sequence array.
 									seqdata[arrayid] = [...row];
 								}
 							}
@@ -773,16 +815,16 @@ function runload() {
 						
 					}
 					if (typeof(songpath) != 'undefined') {
+						// If the sequence file contains a song, load it.
 						mainWindow.webContents.send('openfile',songpath);
-						jsonsave = JSON.stringify(seqdata);
-						fs.writeFileSync("seqdata.json", jsonsave, 'utf8');
-						mainWindow.webContents.send('makeseq',tempdata[2]);
+						
 					}
-				});
-				
-				
-				// event.sender.send('setupseq',tempdata[2]);
-				// just to save the progress
+					// save the settings file
+					jsonsave = JSON.stringify(seqdata);
+					fs.writeFileSync("seqdata.json", jsonsave, 'utf8');
+					// execute the makeseq command at main window to display the sequences in gui.
+					mainWindow.webContents.send('makeseq',tempdata[2]);
+				});			
 
 		  }
 		}).catch(err => {
@@ -790,32 +832,10 @@ function runload() {
 		});
 }
 
-// advanced dialog communications 
-// addframes
-
-ipcMain.on("addframes",function (event, arg) {
-	editor.webContents.send('addframes', arg);
-});
-
-ipcMain.on("fadeout",function (event, arg) {
-	editor.webContents.send('fadeout', arg);
-});
-
-ipcMain.on("fadein",function (event, arg) {
-	editor.webContents.send('fadein', arg);
-});
-
-ipcMain.on("fadeto",function (event, arg) {
-	editor.webContents.send('fadeto', arg);
-});
-
-ipcMain.on("mvltr",function (event, arg) {
-	editor.webContents.send('mvltr', arg);
-});
-
-ipcMain.on("mvrtl",function (event, arg) {
-	editor.webContents.send('mvrtl', arg);
-});
 
 
 
+// initiate everything
+detecthue();
+loadfile();
+app.on('ready', createWindow);

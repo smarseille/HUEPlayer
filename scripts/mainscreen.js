@@ -79,7 +79,7 @@ ipcRenderer.on('makeseq',(event, arg) => {
 });
 
 
-function testseq() {
+function playseq() {
 	var arr = new Array();
 	$('#content').children(".sequence").each(function() {
 		arr.push($(this).children("#sequencesel").val());
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			    }
 			    // Begin playing the sound.
 			    ipcRenderer.send("stopseqp", "no"); 
-			    testseq();
+			    playseq();
 			    sound.play();
 	
 			    // Update the track display.
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function(){
 			]);
 	});
 	$('#testseq').click(function() {
-		testseq();
+		playseq();
 	});
 	$('#savep').click(function() {
 		var expect = 0; // expect nothing!
