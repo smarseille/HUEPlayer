@@ -24,9 +24,6 @@ There are bugs here and there and there are almost no validations in place (for 
 Aareksio - https://github.com/Aareksio - Thank you for bringing me to Node JS as it was the easiest to get communicating with the USBHID, and some other minor things.
 I know, ancient Javascript. sorry to make you cry :( it is only like few days I had to throw it out as a PoC.
 
-## Special NO Thanks
-Puff - Keep slacking.. :( learn NodeJS so you can help me <3 !
-
 ## Help
 
 Help is wanted, more to improve myself as well to improve this player. I also have a bigger idea after creating this kind of player to make a timeline based editor with way more functionality.
