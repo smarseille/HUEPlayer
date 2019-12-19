@@ -25,7 +25,7 @@ Aareksio - https://github.com/Aareksio - Thank you for bringing me to Node JS as
 I know, ancient Javascript. sorry to make you cry :( it is only like few days I had to throw it out as a PoC.
 
 ## Special NO Thanks
-Puff - Keep slacking.. :( learn NodeJS so you can help me!
+Puff - Keep slacking.. :( learn NodeJS so you can help me <3 !
 
 ## Help
 
