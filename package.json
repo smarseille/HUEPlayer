@@ -11,7 +11,7 @@
   "dependencies": {
     "app": "^0.1.0",
     "colors": "^1.4.0",
-    "electron": "^7.1.4",
+    "electron": "^9.4.0",
     "fs": "0.0.1-security",
     "howler": "^2.1.2",
     "jquery": "^3.4.1",
